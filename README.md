@@ -91,6 +91,7 @@ No frameworks. No heavy libraries. No distractions.
 ├─ piano-soft.mp3
 ├─ piano-rich.mp3
 ├─ IMG_20251231_124558.jpg
+├─ IMG_20251231_124558-EDIT.jpg
 ├─ 490586760_17907975894078289_6940883933386605548_n.jpeg
 ├─ 474083901_931231879148984_6780845392411539838_n.jpeg
 ```
