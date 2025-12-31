@@ -1,0 +1,8 @@
+{
+    "name": "A Quiet Kind of Love",
+    "short_name": "Quiet Love",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#08070d",
+    "theme_color": "#08070d"
+}

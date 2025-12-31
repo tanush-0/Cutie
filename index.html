@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Quiet Kind of Love</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#08070d">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital@1&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --black: #08070d;
+            --wine: #1a1025;
+            --rose: #b81442;
+            --gold: #e6b89c;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: Inter, system-ui, sans-serif;
+            background: radial-gradient(circle at top, #241533, var(--black));
+            color: rgba(255, 255, 255, .9);
+            overflow: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+
+        .page {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-content: center;
+            text-align: center;
+            padding: 2rem;
+
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+            transition:
+                opacity .9s cubic-bezier(.4, 0, .2, 1),
+                transform .9s cubic-bezier(.4, 0, .2, 1),
+                filter .9s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .page.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(40px) scale(.96);
+            filter: blur(18px);
+        }
+
+        h1,
+        h2 {
+            letter-spacing: -.02em;
+        }
+
+        em {
+            font-family: "Playfair Display", serif;
+            font-style: italic;
+            color: rgba(182, 83, 83, 0.8);
+        }
+
+        p {
+            max-width: 520px;
+            margin: 1.2rem auto 0;
+            opacity: .6;
+        }
+
+        .tap {
+            margin-top: 3rem;
+            font-size: .9rem;
+            opacity: .35;
+        }
+
+        .story {
+            font-family: "Playfair Display", serif;
+            font-size: 1.6rem;
+            font-style: italic;
+        }
+
+        .glass {
+            position: fixed;
+            inset: 0;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            pointer-events: none;
+            z-index: 1;
+            opacity: .25;
+        }
+
+        .memory-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .memory {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            filter: blur(14px) brightness(.55) saturate(1.1);
+            transform: scale(1.08);
+            transition:
+                opacity 1.6s ease,
+                filter 1.6s ease,
+                transform 10s ease;
+        }
+
+        .memory.active {
+            opacity: 1;
+            filter: blur(2px) brightness(.7);
+            transform: scale(1);
+        }
+
+        button.loving {
+            margin-top: 10px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #c9184a, #e6b89c);
+            /* rose → gold gradient */
+            color: #000;
+            box-shadow: 0 6px 20px rgba(201, 24, 74, 0.4), 0 4px 12px rgba(230, 184, 156, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button.loving:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 12px 28px rgba(201, 24, 74, 0.5), 0 8px 16px rgba(230, 184, 156, 0.4);
+        }
+
+        button.loving::before {
+            content: "💖";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        /* CINEMATIC VIGNETTE EFFECT */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at center,
+                    rgba(0, 0, 0, 0) 40%,
+                    rgba(0, 0, 0, 0.55) 100%);
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glass"></div>
+    <canvas id="fx"></canvas>
+
+    <div class="memory-layer">
+        <img src="IMG_20251231_124558.jpg" class="memory active">
+        <img src="490586760_17907975894078289_6940883933386605548_n.jpeg" class="memory">
+        <img src="474083901_931231879148984_6780845392411539838_n.jpeg" class="memory">
+    </div>
+
+    <audio id="soft" src="piano-soft.mp3" loop playsinline></audio>
+    <audio id="rich" src="piano-rich.mp3" loop playsinline></audio>
+
+    <!-- PAGE 1 -->
+    <section class="page" id="p1">
+        <h1>
+            <hr>𞤏 𞤂 ꛤ ꛤ ᖿ -_- 𐊪 𐊤 𞤧 -_- ᖿ 𐊤 𞤏 Ɍ
+            <hr> -- <em>A quieter beginning</em> --
+        </h1>
+        <p>Some love doesn’t arrive loudly. It stays.</p>
+        <div class="tap">Tap to begin</div>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section class="page hidden" id="p2">
+        <h2>For <em>Ridhima (Cutie🥰)</em></h2>
+        <p class="story">When the clock breaks into a new year, my heart doesn’t move—it stays with you. 🕛❤️</p>
+        <div class="tap">Tap</div>
+    </section>
+
+    <!-- PAGE 3 -->
+    <section class="page hidden" id="p3">
+        <p class="story">
+            I hope every step ahead finds you stronger, calmer, and exactly where your heart belongs. 🌱🌤️
+        </p>
+        <div class="tap">Tap</div>
+    </section>
+
+    <!-- PAGE 4 -->
+    <section class="page hidden" id="p4">
+        <h2>Always, <em> 🥰 Bulo ji 😘 </em></h2>
+        <p class="story">Wishing you a Very Happy New Year 💖</p>
+        <div class="tap">Hold the Tap Ma'am</div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+
+    <script>
+        /* ---------------- HAPTICS ---------------- */
+        function haptic(pattern = 10) {
+            if (navigator.vibrate) navigator.vibrate(pattern);
+        }
+
+        /* ---------------- STATE ---------------- */
+        const pages = [p1, p2, p3, p4];
+        let index = 0;
+
+        /* ---------------- MUSIC ---------------- */
+        const soft = document.getElementById("soft");
+        const rich = document.getElementById("rich");
+        soft.volume = 0; rich.volume = 0;
+
+        function fadeIn(audio, target = .45) {
+            audio.play().catch(() => { });
+            let v = audio.volume;
+            const i = setInterval(() => {
+                v += .015;
+                audio.volume = Math.min(v, target);
+                if (v >= target) clearInterval(i);
+            }, 120);
+        }
+
+        function crossFade() {
+            fadeIn(rich, .5);
+            let v = soft.volume;
+            const i = setInterval(() => {
+                v -= .02;
+                soft.volume = Math.max(0, v);
+                if (v <= 0) clearInterval(i);
+            }, 120);
+        }
+
+        /* ---------------- NAV ---------------- */
+        function show(n) {
+            pages.forEach(p => p.classList.add("hidden"));
+            pages[n].classList.remove("hidden");
+        }
+
+        document.body.addEventListener("click", () => {
+            if (index === 0) fadeIn(soft, .35);
+            if (index === 1) crossFade();
+
+            index = Math.min(index + 1, pages.length - 1);
+            show(index);
+            haptic(8);
+
+            // --- Trigger firework burst on the final page --- //
+            if (index === 3) {
+                fireworkBurst();
+                haptic([20, 40, 20]);
+            }
+        });
+
+        /* ---------------- MEMORY IMAGES ---------------- */
+        const memories = document.querySelectorAll(".memory");
+        let memIndex = 0;
+
+        function nextMemory() {
+            memories[memIndex]?.classList.remove("active");
+            memIndex = (memIndex + 1) % memories.length;
+            memories[memIndex].classList.add("active");
+        }
+
+        /* Change image on meaningful moments */
+        document.body.addEventListener("click", () => {
+            if (index === 1 || index === 2 || index === 3) {
+                nextMemory();
+            }
+        });
+
+        /* ---------------- THREE HEART ---------------- */
+        const scene = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
+        cam.position.z = 8;
+
+        const renderer = new THREE.WebGLRenderer({ canvas: fx, alpha: true, antialias: true });
+        renderer.setSize(innerWidth, innerHeight);
+        renderer.setPixelRatio(devicePixelRatio);
+
+        const geo = new THREE.BufferGeometry();
+        const pts = 2200;
+        const pos = new Float32Array(pts * 3);
+
+        for (let i = 0; i < pts; i++) {
+            const t = Math.random() * Math.PI * 2;
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+            pos[i * 3] = x * .05 + (Math.random() - .5) * .2;
+            pos[i * 3 + 1] = y * .05 + (Math.random() - .5) * .2;
+            pos[i * 3 + 2] = (Math.random() - .5) * 2;
+        }
+        geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+
+        const mat = new THREE.PointsMaterial({
+            size: .045,
+            color: 0xc9184a,
+            transparent: true,
+            opacity: .85
+        });
+
+        const heart = new THREE.Points(geo, mat);
+        scene.add(heart);
+
+        let t = 0;
+
+        (function animate() {
+            t += 0.008;
+
+            const breath = 1 + Math.sin(t) * 0.035;
+            heart.scale.set(breath, breath, breath);
+
+            heart.rotation.y += 0.0005;
+            heart.rotation.x += 0.0003;
+
+            renderer.render(scene, cam);
+            requestAnimationFrame(animate);
+        })();
+
+        /* ---------- HOLD TO COPY CAPTION ---------- */
+        let captionTimer;
+
+        function startHold() {
+            captionTimer = setTimeout(() => {
+                navigator.clipboard.writeText(generateCaption());
+                showToast("Caption copied 💖");
+                haptic([15, 30, 15]);
+            }, 600);
+        }
+
+        function cancelHold() {
+            clearTimeout(captionTimer);
+        }
+
+        /* Desktop */
+        p4.addEventListener("mousedown", startHold);
+        p4.addEventListener("mouseup", cancelHold);
+        p4.addEventListener("mouseleave", cancelHold);
+
+        /* Mobile */
+        p4.addEventListener("touchstart", startHold);
+        p4.addEventListener("touchend", cancelHold);
+        p4.addEventListener("touchcancel", cancelHold);
+
+
+        /* ---------------- PWA ---------------- */
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js");
+        }
+
+        // ---------------- FIREWORK BURST ---------------- //
+        function fireworkBurst() {
+            const burstGeo = new THREE.BufferGeometry();
+            const count = 1200;
+            const pos = new Float32Array(count * 3);
+
+            for (let i = 0; i < count; i++) {
+                const t = Math.random() * Math.PI * 2;
+
+                // Heart equation
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y =
+                    13 * Math.cos(t) -
+                    5 * Math.cos(2 * t) -
+                    2 * Math.cos(3 * t) -
+                    Math.cos(4 * t);
+
+                pos[i * 3] = x * 0.06;
+                pos[i * 3 + 1] = y * 0.06;
+                pos[i * 3 + 2] = (Math.random() - 0.5) * 2;
+            }
+
+            burstGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+
+            const burstMat = new THREE.PointsMaterial({
+                size: 0.09,
+                color: 0xe6b89c,
+                transparent: true,
+                opacity: 1
+            });
+
+            const burst = new THREE.Points(burstGeo, burstMat);
+            burst.scale.set(0.1, 0.1, 0.1);
+            scene.add(burst);
+
+            let scale = 0.1;
+
+            const anim = setInterval(() => {
+                scale += 0.05;
+                burst.scale.set(scale, scale, scale);
+                burst.material.opacity -= 0.02;
+
+                if (burst.material.opacity <= 0) {
+                    scene.remove(burst);
+                    clearInterval(anim);
+                }
+            }, 16);
+
+            haptic([30, 60, 30]);
+        }
+
+        // Generate a random caption for the story
+        function generateCaption() {
+            const captions = [
+                "Some love doesn’t announce itself. It stays. 💖✨",
+                "A quiet beginning to something that feels like home. 🌙",
+                "For Ridhima (Cutie🥰) — always chosen, always cherished.",
+                "Soft moments. Deep feelings. Midnight kind of love.",
+                "Wishing you a year filled with quiet joys and endless love. 🌟",
+                "When the world is loud, our love speaks softly. Happy New Year! 🎉❤️",
+                "To new beginnings and timeless connections. Happy 2026! 🕛💫"
+            ];
+
+            return captions[Math.floor(Math.random() * captions.length)];
+        }
+
+        function showToast(text) {
+            const t = document.createElement("div");
+            t.innerText = text;
+            t.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(201,24,74,.9);
+                color: #fff;
+                padding: 12px 22px;
+                border-radius: 999px;
+                font-size: .9rem;
+                font-weight: 600;
+                box-shadow: 0 10px 30px rgba(0,0,0,.4);
+                z-index: 9999;
+                opacity: 0;
+                transition: opacity .3s ease;
+            `;
+            document.body.appendChild(t);
+            requestAnimationFrame(() => t.style.opacity = 1);
+            setTimeout(() => {
+                t.style.opacity = 0;
+                setTimeout(() => t.remove(), 300);
+            }, 1600);
+        }
+    </script>
+</body>
+
+</html>
