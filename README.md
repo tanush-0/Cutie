@@ -124,7 +124,7 @@ You’re welcome to learn from it — please do not reuse the narrative or asset
 
 ## 🌌 Credits
 
-Designed & crafted with care by **Bulo ji**  
+Designed & crafted with care by **Your Tanush**  
 For **Ridhima (Cutie🥰)**  
 
 Happy New Year 💖
